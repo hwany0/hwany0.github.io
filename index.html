@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>버튼 응답 챗봇</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chatbot-container {
+            width: 400px;
+            height: 600px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-window {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .chat-input {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-size: 16px;
+        }
+        .chat-input button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            cursor: pointer;
+        }
+        .message {
+            margin: 6px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        .user {
+            background: #e0f7fa;
+            align-self: flex-end;
+        }
+        .bot {
+            background: #f1f1f1;
+            align-self: flex-start;
+        }
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+        .quick-buttons button {
+            flex: 1;
+            background: #eeeeee;
+            border: none;
+            padding: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .quick-buttons button:hover {
+            background: #dddddd;
+        }
+    </style>
+</head>
+<body>
+<div class="chatbot-container">
+    <div class="chat-window" id="chatWindow"></div>
+
+    <div class="quick-buttons">
+        <button onclick="sendQuickMessage('안녕')">안녕</button>
+        <button onclick="sendQuickMessage('이름')">이름</button>
+        <button onclick="sendQuickMessage('시간')">시간</button>
+        <button onclick="sendQuickMessage('날짜')">날짜</button>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="메시지를 입력하세요" onkeydown="keyDown(event)"/>
+        <button onclick="sendMessage()">전송</button>
+    </div>
+</div>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+
+    const responses = {
+        '안녕': '안녕하세요! 무엇을 도와드릴까요?',
+        '이름': '저는 웹 챗봇이에요 😊',
+        '시간': `현재 시간은 ${new Date().toLocaleTimeString()}입니다.`,
+        '날짜': `오늘은 ${new Date().toLocaleDateString()}입니다.`,
+    };
+
+    function keyDown(event) {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            sendMessage();
+        }
+    }
+    function sendMessage() {
+        const text = userInput.value.trim();
+        if (text === '') return;
+        addMessage(text, 'user');
+        userInput.value = '';
+        respond(text);
+    }
+
+    function sendQuickMessage(text) {
+        addMessage(text, 'user');
+        respond(text);
+    }
+
+    function respond(text) {
+        setTimeout(() => {
+            const response = responses[text] || '죄송해요, 이해하지 못했어요 😅';
+            addMessage(response, 'bot');
+        }, 400);
+    }
+
+    function addMessage(text, sender) {
+        const msg = document.createElement('div');
+        msg.className = `message ${sender}`;
+        msg.textContent = text;
+        chatWindow.appendChild(msg);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+</script>
+</body>
+</html>
